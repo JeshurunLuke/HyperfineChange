@@ -68,7 +68,7 @@ end
 module Hamiltonian
 import ..QuantumWrapper.AM_Toolbox: endNode, getBasis#, getBasisUC
 import ..QuantumWrapper: AM_Toolbox
-export generateHamiltonian, OpticalBeam, MoleculeHamiltonian, zeeman_ham, dc, DipoleMatrix
+export generateHamiltonian, OpticalBeam, MoleculeHamiltonian, zeeman_ham, dc, DipoleMatrix, getDipoleMatrix
 import ..Molecule: moleculeProperties
 include("diatomic/Hamiltonian.jl")
 using ..diatomic_jl

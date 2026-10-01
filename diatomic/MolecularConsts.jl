@@ -5,6 +5,7 @@ h = PlanckConstant.val
 muN = 5.0507837461e-27
 bohr = BohrRadius.val
 eps0 = VacuumElectricPermittivity.val
+c_l = SpeedOfLightInVacuum.val
 
 DebyeSI = 3.33564e-30
 
@@ -70,12 +71,14 @@ K40Rb87 = Dict(
     "MuN" => 0.0140 * muN,
     "Mu1" => -0.324 * (1 - 1321e-6) * muN,
     "Mu2" => 1.834 * (1 - 3469e-6) * muN,
-    "a0" => 5.53e-5 * 1e6 * h,
-    "a2" => 4.47e-5 * 1e6 * h,
+    "a0" => 55.3*1e-4*h*eps0*c_l*2, #0,  #1/3*(100 +2*33) *h *1e-4 , #5.53e-5 * 1e6 * h,
+    "a2" => 44.7*1e-4*h*eps0*c_l*2, #2/3*(100 - 33)* h *1e-4*eps0*c_l/2, #4.47e-5 * 1e6 * h,
     "Beta" => 0
 )
+
+
 K40Rb87T = Dict(
-    "Name" => "K40Rb87",
+    "Name" => "K40Rb87_Till",
     "I1" => 4,
     "I2" => 1.5,
     "d0" => 0.573999 * DebyeSI,
@@ -90,8 +93,8 @@ K40Rb87T = Dict(
     "MuN" => 0.0140 * muN,
     "Mu1" => -0.324 * (1 - 1321e-6) * muN,
     "Mu2" => 1.834 * (1 - 3469e-6) * muN,
-    "a0" => 5.53e-5 * 1e6 * h,
-    "a2" => 4.47e-5 * 1e6 * h,
+    "a0" => 0, #55.3*1e-4*h*eps0*c_l*2, #0,  #1/3*(100 +2*33) *h *1e-4 , #5.53e-5 * 1e6 * h,
+    "a2" => 44.7*1e-4*h*eps0*c_l*2, #2/3*(100 - 33)* h *1e-4*eps0*c_l/2, #4.47e-5 * 1e6 * h,
     "Beta" => 0
 )
 

@@ -80,20 +80,6 @@ struct OpticalBeam
     Intensity
 end
 
-OpticalBeam(kvec, pol_k) = OpticalBeam(kvec, pol_k, 1.0)
-function OpticalBeam(kvec, pol_k, Intensity)
-    kvec, pol_k = normalize(kvec), normalize(pol_k)
-    
-    rot_mat = rotation_matrix_to_align_with_x_axis(kvec)
-    pol_space = rot_mat*pol_k
-    if !isapprox([1.0, 0, 0], rot_mat*kvec)
-        throw("Improper Rotation: $(rot_mat*kvec) instead of [1.0, 0.0, 0.0]")
-    end
-    if pol_k[1] != 0.0
-        throw("Improper Polarization: (pol_k should not have x components)")
-    end
-    OpticalBeam(kvec, pol_k, rot_mat, pol_space, Intensity)
-end
 
 
 
@@ -224,6 +210,8 @@ end
 
 
 function AC_Stark(M::moleculeProperties, Beam::OpticalBeam)
+    h = PlanckConstant.val
+    println(Beam.Intensity)
     mag = sqrt(2*Beam.Intensity/(PhysConstants["c"]*PhysConstants["e0"]))
     a0, a2 = M.Constants["a0"], M.Constants["a2"]
     dims = prod([length(node.spin) for node in endNode(M.basisTree)])
@@ -231,8 +219,34 @@ function AC_Stark(M::moleculeProperties, Beam::OpticalBeam)
     
     A2 = sqrt(3/2)*T2_C(M)
     P2 = [scaler*sparse(1.0I, dims, dims) for scaler in makeT2(pol, conj.(pol))]
+
     -mag^2*(sparse(1.0I, dims, dims)*a0 + tensor_dot(A2, P2, order = 2)*a2)/4
 end
+
+
+OpticalBeam(kvec, pol_k) = OpticalBeam(kvec, pol_k, 1.0)
+function OpticalBeam(kvec, pol_k, Intensity)
+    kvec, pol_k = normalize(kvec), normalize(pol_k)
+    
+    rot_mat = rotation_matrix_to_align_with_x_axis(kvec)
+    pol_space = adjoint(rot_mat)*pol_k ## Reasonable>?
+    if !isapprox([1.0, 0, 0], rot_mat*kvec)
+        throw("Improper Rotation: $(rot_mat*kvec) instead of [1.0, 0.0, 0.0]")
+    end
+    
+    if pol_k[1] != 0.0
+        throw("$pol_k Improper Polarization: (pol_k should not have x components)")
+    end
+
+
+    if  !isapprox(dot(kvec, pol_space), 0.0, atol=1e-8)
+        throw("$pol_space Kvec is not perpendicular to the polarization")
+    end
+
+
+    OpticalBeam(kvec, pol_k, rot_mat, pol_space, Intensity)
+end
+
 
 
 
