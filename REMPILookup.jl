@@ -19,13 +19,13 @@ import ..IntDist: REMPIConfig
 
 export rempi_lookup, lookup_detection
 
-# y = (ground amplitude, intermediate amplitude, accumulated ion population)
-# NOTE: dy[1] is carried over unchanged from the original notebook. It is not the
-# standard Rabi form dy[1] = 0.5im*Ω*y[2], so ground-state population is not
-# conserved by the coherent part. Check before relying on absolute yields.
+# y = (ground amplitude, intermediate amplitude, accumulated ion population).
+# Standard Rabi-ionisation form: dc_g = i(Ω/2)c_e, dc_e = i(Ω/2)c_g - (Γ/2)c_e,
+# dP_ion = Γion|c_e|^2. The original notebook had dy[1] = -0.5im*(Ω*y[2] - conj(Ω*y[2])),
+# which does not conserve population (survival up to ~22, ion yield up to ~3.6).
 function rempi_ode!(dy, y, p, t)
     Ω, Γion, Γdecay = p
-    dy[1] = -0.5im * (Ω * y[2] - conj(Ω * y[2]))
+    dy[1] = 0.5im * conj(Ω) * y[2]
     dy[2] = -0.5 * (Γdecay + Γion) * y[2] + 0.5im * Ω * y[1]
     dy[3] = Γion * abs2(y[2])
 end
